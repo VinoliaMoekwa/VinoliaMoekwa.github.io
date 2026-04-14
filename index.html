@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>K-Drama Companion</title>
-  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
 
-  <!-- Navbar -->
   <header>
     <h1>K-Drama Companion</h1>
     <nav>
@@ -17,28 +17,18 @@
     </nav>
   </header>
 
-  <!-- Search Section -->
- <input id="searchInput" type="text" placeholder="Search..." />
-<button id="searchButton">Search</button>
+  <main>
+    <section class="search-section">
+      <input id="searchInput" type="text" placeholder="Search for a K-Drama..." />
+      <button id="searchButton">Search</button>
+    </section>
 
-<div id="resultsContainer"></div>
+    <section class="results">
+      <h2>Popular Dramas</h2>
+      <div id="resultsContainer" class="drama-container"></div>
+    </section>
+  </main>
 
-  <!-- Results Section -->
-  <section class="results">
-    <h2>Popular Dramas</h2>
-
-    <div class="drama-container">
-      <!-- Example Card -->
-      <div class="card">
-        <img src="https://via.placeholder.com/150" alt="Drama Poster">
-        <h3>Drama Title</h3>
-        <p>⭐ 8.5</p>
-      </div>
-    </div>
-
-  </section>
-<footer>
   <script src="scripts/main.js"></script>
-</footer>
 </body>
 </html>
