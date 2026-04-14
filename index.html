@@ -1,10 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Final Project</title>
+  <meta charset="UTF-8">
+  <title>K-Drama Companion</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Hello, this is my final project!</h1>
-  <p>My name is Vinolia</p>
+
+  <!-- Navbar -->
+  <header>
+    <h1>K-Drama Companion</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Search</a>
+      <a href="#">Favorites</a>
+    </nav>
+  </header>
+
+  <!-- Search Section -->
+  <section class="search-section">
+    <input type="text" placeholder="Search for a K-Drama..." />
+    <button>Search</button>
+  </section>
+
+  <!-- Results Section -->
+  <section class="results">
+    <h2>Popular Dramas</h2>
+
+    <div class="drama-container">
+      <!-- Example Card -->
+      <div class="card">
+        <img src="https://via.placeholder.com/150" alt="Drama Poster">
+        <h3>Drama Title</h3>
+        <p>⭐ 8.5</p>
+      </div>
+    </div>
+
+  </section>
+<footer>
+  <script src="scripts/main.js"></script>
+</footer>
 </body>
 </html>
