@@ -1,5 +1,4 @@
-const favoritesContainer = document.getElementById("favorites-container");
-const favoritesCount = document.getElementById("favorites-count");
+const favoritesGrid = document.getElementById("favoritesGrid");
 
 function getFavorites() {
   return JSON.parse(localStorage.getItem("favorites")) || [];
@@ -11,55 +10,56 @@ function saveFavorites(favorites) {
 
 function removeFavorite(id) {
   const favorites = getFavorites();
-  const updatedFavorites = favorites.filter(drama => drama.id !== id);
+  const updatedFavorites = favorites.filter((drama) => drama.id !== id);
 
   saveFavorites(updatedFavorites);
-  displayFavorites();
+  loadFavorites();
 }
 
-function displayFavorites() {
+function goToDetails(id) {
+  window.location.href = `details.html?id=${id}`;
+}
+
+function loadFavorites() {
   const favorites = getFavorites();
 
-  favoritesCount.textContent = favorites.length;
-  favoritesContainer.innerHTML = "";
-
   if (favorites.length === 0) {
-    favoritesContainer.innerHTML = `
-      <div class="empty-message">
-        <p>No favorite dramas yet.</p>
-        <p>Go to the homepage and add some favorites.</p>
+    favoritesGrid.innerHTML = `
+      <div class="empty-state">
+        <p>No favorites saved yet.</p>
       </div>
     `;
     return;
   }
 
-  favorites.forEach(drama => {
-    const card = document.createElement("article");
-    card.classList.add("favorite-card");
+  favoritesGrid.innerHTML = favorites.map((drama) => {
+    const poster = drama.poster_path
+      ? `https://image.tmdb.org/t/p/w500${drama.poster_path}`
+      : "https://via.placeholder.com/300x450?text=No+Image";
 
-    card.innerHTML = `
-      <img src="${drama.poster}" alt="${drama.title}">
-      <div class="favorite-card-content">
-        <h2>${drama.title}</h2>
-        <p><strong>Rating:</strong> ${drama.rating || "N/A"}</p>
-        <p>${drama.description || "No description available."}</p>
-        <div class="card-buttons">
-          <a class="details-btn" href="details.html?id=${drama.id}">View Details</a>
-          <button class="remove-btn" data-id="${drama.id}">Remove</button>
+    const rating = drama.vote_average
+      ? drama.vote_average.toFixed(1)
+      : "N/A";
+
+    const description = drama.overview
+      ? drama.overview.length > 120
+        ? `${drama.overview.slice(0, 120)}...`
+        : drama.overview
+      : "No description available.";
+
+    return `
+      <div class="card">
+        <img src="${poster}" alt="${drama.name}">
+        <h3>${drama.name}</h3>
+        <p class="rating">⭐ ${rating}</p>
+        <p class="description">${description}</p>
+        <div class="favorites-actions">
+          <button onclick="goToDetails(${drama.id})">View Details</button>
+          <button onclick="removeFavorite(${drama.id})">Remove</button>
         </div>
       </div>
     `;
-
-    favoritesContainer.appendChild(card);
-  });
-
-  const removeButtons = document.querySelectorAll(".remove-btn");
-  removeButtons.forEach(button => {
-    button.addEventListener("click", function () {
-      const dramaId = Number(this.dataset.id);
-      removeFavorite(dramaId);
-    });
-  });
+  }).join("");
 }
 
-displayFavorites();
+loadFavorites();

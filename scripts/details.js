@@ -12,30 +12,61 @@ async function fetchDramaDetails(dramaId) {
   const url = `https://api.themoviedb.org/3/tv/${dramaId}?api_key=${TMDB_API_KEY}&language=en-US`;
 
   const response = await fetch(url);
+
   if (!response.ok) {
     throw new Error("Failed to fetch drama details");
   }
 
-  return response.json();
+  return await response.json();
 }
 
 async function fetchTrailer(dramaName) {
-  const query = `${dramaName} official trailer kdrama`;
+  const searchQueries = [
+    `${dramaName} official trailer kdrama`,
+    `${dramaName} trailer kdrama`,
+    `${dramaName} official teaser kdrama`
+  ];
 
-  const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${encodeURIComponent(query)}&videoEmbeddable=true&videoSyndicated=true&key=${YOUTUBE_API_KEY}`;
+  for (const query of searchQueries) {
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=5&q=${encodeURIComponent(query)}&videoEmbeddable=true&videoSyndicated=true&key=${YOUTUBE_API_KEY}`;
 
-  const response = await fetch(url);
+    try {
+      const response = await fetch(url);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch trailer");
+      if (!response.ok) {
+        continue;
+      }
+
+      const data = await response.json();
+
+      if (data.items && data.items.length > 0) {
+        return data.items[0];
+      }
+    } catch (error) {
+      console.error("Trailer fetch error:", error);
+    }
   }
 
-  const data = await response.json();
-  console.log("YouTube trailer data:", data);
-
-  return data.items && data.items.length > 0 ? data.items[0] : null;
+  return null;
 }
 
+function saveFavorite() {
+  if (!window.currentDrama) return;
+
+  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+  const alreadySaved = favorites.some((drama) => drama.id === window.currentDrama.id);
+
+  if (alreadySaved) {
+    alert("This drama is already in your favorites.");
+    return;
+  }
+
+  favorites.push(window.currentDrama);
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+
+  alert("Saved to favorites!");
+}
 
 function renderDetails(drama, trailer) {
   const poster = drama.poster_path
@@ -48,7 +79,11 @@ function renderDetails(drama, trailer) {
 
   const releaseDate = drama.first_air_date || "Unknown";
   const rating = drama.vote_average ? drama.vote_average.toFixed(1) : "N/A";
-  const trailerVideoId = trailer?.id?.videoId;
+
+  const trailerVideoId = trailer?.id?.videoId || trailer?.key || null;
+  const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+    `${drama.name} official trailer kdrama`
+  )}`;
 
   detailsContainer.innerHTML = `
     <div class="details-card">
@@ -65,6 +100,7 @@ function renderDetails(drama, trailer) {
           <p><strong>Genres:</strong> ${genres}</p>
           <p><strong>Language:</strong> ${drama.original_language || "N/A"}</p>
           <p><strong>Overview:</strong> ${drama.overview || "No description available."}</p>
+          <button class="save-favorite-btn" onclick="saveFavorite()">Save to Favorites</button>
         </div>
       </div>
 
@@ -74,18 +110,29 @@ function renderDetails(drama, trailer) {
           trailerVideoId
             ? `<div class="video-wrapper">
                  <iframe
-                   src="https://www.youtube.com/embed/${trailerVideoId}"
+                   src="https://www.youtube.com/embed/${trailerVideoId}?rel=0"
                    title="YouTube trailer player"
                    frameborder="0"
                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                    allowfullscreen>
                  </iframe>
                </div>`
-            : "<p>No trailer found.</p>"
+            : `<p>No trailer found.</p>
+               <p><a href="${youtubeSearchUrl}" target="_blank" rel="noopener noreferrer">Watch on YouTube</a></p>`
         }
       </div>
     </div>
   `;
+
+  window.currentDrama = {
+    id: drama.id,
+    name: drama.name,
+    original_name: drama.original_name,
+    first_air_date: drama.first_air_date,
+    vote_average: drama.vote_average,
+    overview: drama.overview,
+    poster_path: drama.poster_path
+  };
 }
 
 async function loadDramaDetails() {
@@ -102,7 +149,7 @@ async function loadDramaDetails() {
 
     renderDetails(drama, trailer);
   } catch (error) {
-    console.error(error);
+    console.error("Error loading drama details:", error);
     detailsContainer.innerHTML = "<p>Failed to load drama details.</p>";
   }
 }
