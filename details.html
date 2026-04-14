@@ -1,34 +1,26 @@
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>K-Drama Details</title>
-    <link rel="stylesheet" href="styles/details.css" />
-  </head>
-  <body>
-    <main class="page">
-      <section class="details-card">
-        <img id="drama-poster" class="poster" src="" alt="Poster" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>K-Drama Details</title>
+  <link rel="stylesheet" href="styles/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>K-Drama Companion</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="favorites.html">Favorites</a>
+    </nav>
+  </header>
 
-        <div class="info">
-          <h1 id="drama-title">Loading...</h1>
-          <p id="drama-rating" class="rating"></p>
+  <main class="details-page">
+    <section id="detailsContainer" class="details-container">
+      <p>Loading drama details...</p>
+    </section>
+  </main>
 
-          <div class="meta">
-            <p><strong>Release Date:</strong> <span id="drama-release-date"></span></p>
-            <p><strong>Genre:</strong> <span id="drama-genre"></span></p>
-          </div>
-
-          <p id="drama-description" class="description"></p>
-
-          <div class="button-group">
-            <button id="favorite-btn" class="favorite-btn">❤ Add to Favorites</button>
-            <button id="trailer-btn" class="trailer-btn">▶ Watch Trailer</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <script src="scripts/details.js"></script>
-  </body>
+  <script src="scripts/details.js"></script>
+</body>
 </html>
