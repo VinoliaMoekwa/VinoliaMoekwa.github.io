@@ -16,21 +16,30 @@ async function searchDramas() {
 
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
+      `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US`
     );
 
     const data = await response.json();
+    console.log("TMDB data:", data);
 
-    displayResults(data.results);
+    const kdramas = (data.results || []).filter((drama) => {
+      const isKoreanLanguage = drama.original_language === "ko";
+      const isKoreanCountry =
+        Array.isArray(drama.origin_country) && drama.origin_country.includes("KR");
+
+      return isKoreanLanguage || isKoreanCountry;
+    });
+
+    displayResults(kdramas);
   } catch (error) {
-    console.error(error);
+    console.error("Search error:", error);
     resultsContainer.innerHTML = "<p>Error loading dramas.</p>";
   }
 }
 
 function displayResults(dramas) {
   if (!dramas || dramas.length === 0) {
-    resultsContainer.innerHTML = "<p>No dramas found.</p>";
+    resultsContainer.innerHTML = "<p>No K-Dramas found.</p>";
     return;
   }
 
@@ -43,7 +52,7 @@ function displayResults(dramas) {
       <div class="drama-card">
         <img src="${poster}" alt="${drama.name}" width="100%">
         <h3>${drama.name}</h3>
-        <p>⭐ ${drama.vote_average?.toFixed(1) || "N/A"}</p>
+        <p>⭐ ${drama.vote_average ? drama.vote_average.toFixed(1) : "N/A"}</p>
         <button onclick="goToDetails(${drama.id})">View Details</button>
       </div>
     `;
