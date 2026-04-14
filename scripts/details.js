@@ -47,9 +47,12 @@ function renderDetails(drama, trailer) {
 
   detailsContainer.innerHTML = `
     <div class="details-card">
-      <div class="details-top">
-        <img class="details-poster" src="${poster}" alt="${drama.name}">
-        <div class="details-info">
+      <div class="details-grid">
+        <div class="poster-column">
+          <img class="details-poster" src="${poster}" alt="${drama.name}">
+        </div>
+
+        <div class="info-column">
           <h2>${drama.name}</h2>
           <p><strong>Original Name:</strong> ${drama.original_name || "N/A"}</p>
           <p><strong>First Air Date:</strong> ${releaseDate}</p>
@@ -61,18 +64,18 @@ function renderDetails(drama, trailer) {
       </div>
 
       <div class="trailer-section">
-        <h3>Trailer</h3>
+        <h3>Watch Trailer</h3>
         ${
           trailerVideoId
-            ? `<iframe
-                 width="560"
-                 height="315"
-                 src="https://www.youtube.com/embed/${trailerVideoId}"
-                 title="YouTube trailer player"
-                 frameborder="0"
-                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                 allowfullscreen>
-               </iframe>`
+            ? `<div class="video-wrapper">
+                 <iframe
+                   src="https://www.youtube.com/embed/${trailerVideoId}"
+                   title="YouTube trailer player"
+                   frameborder="0"
+                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                   allowfullscreen>
+                 </iframe>
+               </div>`
             : "<p>No trailer found.</p>"
         }
       </div>
