@@ -506,3 +506,34 @@ button:hover {
     width: 100%;
   }
 }
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.4rem;
+  }
+
+  .results h2,
+  .favorites-header h1,
+  .info-column h2 {
+    font-size: 1.3rem;
+  }
+
+  .details-poster {
+    max-width: 190px;
+  }
+
+  .card h3 {
+    font-size: 0.95rem;
+  }
+
+  .card p,
+  .favorites-grid .description,
+  .info-column p {
+    font-size: 0.9rem;
+  }
+
+  button {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+}
